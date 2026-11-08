@@ -1,0 +1,6 @@
+{
+  "name": "X LEGENDS - Isometric MMORPG",
+  "description": "A 2D isometric fantasy MMORPG prototype featuring animated warrior combat, 5 forest monster types, town exploration, quests, and bilingual Arabic/English HUD.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

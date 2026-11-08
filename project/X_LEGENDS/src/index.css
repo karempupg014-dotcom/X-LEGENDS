@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    font-family: 'Outfit', 'Cairo', system-ui, -apple-system, sans-serif;
+  }
+  
+  [dir="rtl"] {
+    font-family: 'Cairo', 'Outfit', system-ui, -apple-system, sans-serif;
+  }
+}
+
+.font-fantasy {
+  font-family: 'Cinzel', 'Cairo', serif;
+}
+
+/* Custom scrollbar for inventory / dialogue / quest logs */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(18, 14, 10, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(180, 140, 80, 0.4);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(220, 175, 100, 0.7);
+}
