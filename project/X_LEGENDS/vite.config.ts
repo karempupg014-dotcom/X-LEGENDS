@@ -5,6 +5,8 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    // GitHub Pages serves this project under /X-LEGENDS/.
+    base: '/X-LEGENDS/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
