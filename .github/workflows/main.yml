@@ -1,0 +1,30 @@
+name: Extract X LEGENDS Project
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract Phase 4 ZIP
+        run: |
+          mkdir -p project
+          unzip -o X_LEGENDS_Phase4_Realistic_Assets_Integration.zip -d project
+          echo "Project extracted successfully"
+          find project -maxdepth 3 -type f | head -100
+
+      - name: Commit extracted project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add project
+          git commit -m "Extract X LEGENDS Phase 4 project" || echo "No changes"
+          git push
