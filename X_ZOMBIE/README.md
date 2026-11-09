@@ -28,3 +28,6 @@ Open this folder in Godot 4.4 or a compatible Godot 4.x release and run `scenes/
 5. Integrate rewarded ads and test them before release.
 
 This is a prototype foundation, not a finished or store-ready game.
+
+
+Android APK export is automated through GitHub Actions on this branch.
