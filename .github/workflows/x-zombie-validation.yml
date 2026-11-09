@@ -1,0 +1,35 @@
+name: X ZOMBIE - Godot validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - x-zombie-prototype
+    paths:
+      - "X_ZOMBIE/**"
+      - ".github/workflows/x-zombie-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot 4.4.1
+        shell: bash
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_linux.x86_64.zip -O godot.zip
+          unzip -q godot.zip
+          chmod +x Godot_v4.4.1-stable_linux.x86_64
+          sudo mv Godot_v4.4.1-stable_linux.x86_64 /usr/local/bin/godot
+          godot --version
+
+      - name: Import project and parse scripts
+        run: godot --headless --editor --path X_ZOMBIE --import --quit
+
+      - name: Launch main scene headlessly
+        run: godot --headless --path X_ZOMBIE --quit-after 5
