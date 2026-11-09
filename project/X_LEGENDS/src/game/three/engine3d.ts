@@ -19,6 +19,9 @@ import {
   createLampPost3D,
   createWallSection3D,
   createNPC3D,
+  createTavern3D,
+  createForge3D,
+  createHouse3D,
 } from './models3d';
 import {
   getCobblestoneTexture,
@@ -246,9 +249,9 @@ export class GameEngine3D {
 
     // 2. Setup Scene & Atmospheric Fog
     this.scene = new THREE.Scene();
-    // Muted atmospheric sky and distance haze give the town more natural depth.
-    this.scene.background = new THREE.Color(0x9bb6c4);
-    this.scene.fog = new THREE.FogExp2(0x9bb6c4, 0.0085);
+    // Warm, cinematic medieval atmosphere with softer distance falloff.
+    this.scene.background = new THREE.Color(0x879ba7);
+    this.scene.fog = new THREE.FogExp2(0x879ba7, 0.0068);
 
     // 3. Setup Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -286,11 +289,12 @@ export class GameEngine3D {
   }
 
   private setupLighting() {
-    const hemiLight = new THREE.HemisphereLight(0xdce9f0, 0x394536, 1.15);
+    const hemiLight = new THREE.HemisphereLight(0xe4edf4, 0x292d27, 1.28);
     hemiLight.position.set(0, 50, 0);
     this.scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffe4c2, 2.0);
+    // Golden late-afternoon key light helps stone, metal and timber read with depth.
+    const sunLight = new THREE.DirectionalLight(0xffd8ad, 2.25);
     sunLight.position.set(35, 60, 40);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
@@ -475,10 +479,18 @@ export class GameEngine3D {
 
     buildingsConfig.forEach((cfg) => {
       const fallbackKey = 'fallback' in cfg ? cfg.fallback : undefined;
-      const model = assetManager.cloneModel(cfg.key) || (fallbackKey ? assetManager.cloneModel(fallbackKey) : null);
+      // Use the textured, handcrafted Three.js town buildings for the village core.
+      // Keep imported GLB assets for the monastery and other landmarks.
+      const handcraftedModel =
+        cfg.key === 'building_tavern' ? createTavern3D() :
+        cfg.key === 'realistic_smithy' ? createForge3D() :
+        (cfg.key === 'building_home_A' || cfg.key === 'building_home_B' || cfg.key === 'building_market')
+          ? createHouse3D()
+          : null;
+      const model = handcraftedModel || assetManager.cloneModel(cfg.key) || (fallbackKey ? assetManager.cloneModel(fallbackKey) : null);
       if (model) {
         const fallbackScale = 'fallbackScale' in cfg ? cfg.fallbackScale : undefined;
-        const selectedScale = assetManager.getGLTF(cfg.key) ? cfg.scale : (fallbackScale ?? cfg.scale);
+        const selectedScale = handcraftedModel ? 1.0 : (assetManager.getGLTF(cfg.key) ? cfg.scale : (fallbackScale ?? cfg.scale));
         model.scale.set(selectedScale, selectedScale, selectedScale);
         model.position.set(cfg.pos[0], cfg.pos[1], cfg.pos[2]);
         model.rotation.y = cfg.rot;

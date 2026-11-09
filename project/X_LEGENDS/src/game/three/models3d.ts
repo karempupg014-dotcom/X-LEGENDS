@@ -1078,19 +1078,52 @@ export function createHouse3D(): THREE.Group {
 
   const wallMat = new THREE.MeshStandardMaterial({
     map: getMedievalWallTexture(),
-    roughness: 0.8,
+    roughness: 0.88,
   });
   const roofMat = new THREE.MeshStandardMaterial({
     map: getRoofTileTexture(),
-    roughness: 0.6,
+    roughness: 0.72,
+  });
+  const timberMat = new THREE.MeshStandardMaterial({
+    color: 0x382315,
+    roughness: 0.9,
+  });
+  const stoneMat = new THREE.MeshStandardMaterial({
+    color: 0x77766f,
+    roughness: 0.96,
+  });
+  const windowMat = new THREE.MeshStandardMaterial({
+    color: 0xffd58a,
+    emissive: 0x8b4b16,
+    emissiveIntensity: 0.45,
+    roughness: 0.35,
   });
 
-  const baseGeo = new THREE.BoxGeometry(4.0, 3.4, 3.6);
-  const baseMesh = new THREE.Mesh(baseGeo, wallMat);
+  const baseMesh = new THREE.Mesh(new THREE.BoxGeometry(4.0, 3.4, 3.6), wallMat);
   baseMesh.position.y = 1.7;
   baseMesh.castShadow = true;
   baseMesh.receiveShadow = true;
   group.add(baseMesh);
+
+  // Dark oak framing gives the plaster walls a readable medieval half-timber structure.
+  for (const x of [-1.88, 1.88]) {
+    const post = new THREE.Mesh(new THREE.BoxGeometry(0.14, 3.45, 0.16), timberMat);
+    post.position.set(x, 1.72, 1.82);
+    post.castShadow = true;
+    group.add(post);
+  }
+  for (const y of [0.28, 3.18]) {
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(4.05, 0.16, 0.18), timberMat);
+    beam.position.set(0, y, 1.82);
+    beam.castShadow = true;
+    group.add(beam);
+  }
+  for (const x of [-0.92, 0.92]) {
+    const brace = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.1, 0.14), timberMat);
+    brace.position.set(x, 2.12, 1.84);
+    brace.rotation.z = x < 0 ? -0.42 : 0.42;
+    group.add(brace);
+  }
 
   const roofGeo = new THREE.ConeGeometry(3.2, 2.2, 4);
   roofGeo.rotateY(Math.PI / 4);
@@ -1099,6 +1132,56 @@ export function createHouse3D(): THREE.Group {
   roofMesh.castShadow = true;
   group.add(roofMesh);
 
+  // Stone chimney with a dark cap.
+  const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.62, 2.15, 0.62), stoneMat);
+  chimney.position.set(1.28, 4.45, -0.95);
+  chimney.castShadow = true;
+  group.add(chimney);
+  const chimneyCap = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.16, 0.82), timberMat);
+  chimneyCap.position.set(1.28, 5.58, -0.95);
+  group.add(chimneyCap);
+
+  // Recessed front door, warm windows and timber shutters.
+  const door = new THREE.Mesh(new THREE.BoxGeometry(0.92, 1.9, 0.1), timberMat);
+  door.position.set(0, 0.98, 1.86);
+  door.castShadow = true;
+  group.add(door);
+  const doorPanel = new THREE.Mesh(new THREE.BoxGeometry(0.68, 1.55, 0.035), materials.leather);
+  doorPanel.position.set(0, 0.98, 1.925);
+  group.add(doorPanel);
+  const handle = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 8), materials.gold);
+  handle.position.set(0.28, 1.0, 1.97);
+  group.add(handle);
+
+  for (const x of [-1.15, 1.15]) {
+    const window = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.82, 0.07), windowMat);
+    window.position.set(x, 2.15, 1.86);
+    group.add(window);
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.98, 0.11), timberMat);
+    frame.position.set(x, 2.15, 1.82);
+    group.add(frame);
+    const inset = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.74, 0.035), windowMat);
+    inset.position.set(x, 2.15, 1.89);
+    group.add(inset);
+    for (const side of [-1, 1]) {
+      const shutter = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.78, 0.08), materials.wood);
+      shutter.position.set(x + side * 0.42, 2.15, 1.86);
+      group.add(shutter);
+    }
+  }
+
+  // Small stone foundation course.
+  const foundation = new THREE.Mesh(new THREE.BoxGeometry(4.12, 0.28, 3.72), stoneMat);
+  foundation.position.y = 0.14;
+  foundation.receiveShadow = true;
+  group.add(foundation);
+
+  group.traverse((child) => {
+    if ((child as THREE.Mesh).isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+    }
+  });
   return group;
 }
 
