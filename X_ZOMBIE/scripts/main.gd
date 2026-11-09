@@ -23,6 +23,19 @@ func _ready() -> void:
     InputMap.add_action("move_right")
     InputMap.add_action("move_forward")
     InputMap.add_action("move_back")
+    _configure_keyboard()
+
+func _configure_keyboard() -> void:
+    var keys := {
+        "move_left": KEY_A,
+        "move_right": KEY_D,
+        "move_forward": KEY_W,
+        "move_back": KEY_S
+    }
+    for action in keys:
+        var key_event := InputEventKey.new()
+        key_event.physical_keycode = keys[action]
+        InputMap.action_add_event(action, key_event)
 
 func _setup_world() -> void:
     var world_env := WorldEnvironment.new()
