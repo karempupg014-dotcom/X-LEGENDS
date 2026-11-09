@@ -19,6 +19,9 @@ import {
   createLampPost3D,
   createWallSection3D,
   createNPC3D,
+  createTavern3D,
+  createForge3D,
+  createHouse3D,
 } from './models3d';
 import {
   getCobblestoneTexture,
@@ -476,10 +479,18 @@ export class GameEngine3D {
 
     buildingsConfig.forEach((cfg) => {
       const fallbackKey = 'fallback' in cfg ? cfg.fallback : undefined;
-      const model = assetManager.cloneModel(cfg.key) || (fallbackKey ? assetManager.cloneModel(fallbackKey) : null);
+      // Use the textured, handcrafted Three.js town buildings for the village core.
+      // Keep imported GLB assets for the monastery and other landmarks.
+      const handcraftedModel =
+        cfg.key === 'building_tavern' ? createTavern3D() :
+        cfg.key === 'building_blacksmith' ? createForge3D() :
+        (cfg.key === 'building_home_A' || cfg.key === 'building_home_B' || cfg.key === 'building_market')
+          ? createHouse3D()
+          : null;
+      const model = handcraftedModel || assetManager.cloneModel(cfg.key) || (fallbackKey ? assetManager.cloneModel(fallbackKey) : null);
       if (model) {
         const fallbackScale = 'fallbackScale' in cfg ? cfg.fallbackScale : undefined;
-        const selectedScale = assetManager.getGLTF(cfg.key) ? cfg.scale : (fallbackScale ?? cfg.scale);
+        const selectedScale = handcraftedModel ? 1.0 : (assetManager.getGLTF(cfg.key) ? cfg.scale : (fallbackScale ?? cfg.scale));
         model.scale.set(selectedScale, selectedScale, selectedScale);
         model.position.set(cfg.pos[0], cfg.pos[1], cfg.pos[2]);
         model.rotation.y = cfg.rot;
