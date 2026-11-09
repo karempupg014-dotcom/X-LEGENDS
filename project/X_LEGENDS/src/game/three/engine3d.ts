@@ -483,7 +483,7 @@ export class GameEngine3D {
       // Keep imported GLB assets for the monastery and other landmarks.
       const handcraftedModel =
         cfg.key === 'building_tavern' ? createTavern3D() :
-        cfg.key === 'building_blacksmith' ? createForge3D() :
+        cfg.key === 'realistic_smithy' ? createForge3D() :
         (cfg.key === 'building_home_A' || cfg.key === 'building_home_B' || cfg.key === 'building_market')
           ? createHouse3D()
           : null;
