@@ -3,7 +3,7 @@ extends Node3D
 const PlayerScript = preload("res://scripts/player.gd")
 const ZombieScript = preload("res://scripts/zombie.gd")
 
-var player: CharacterBody3D
+var player
 var health_label: Label
 var count_label: Label
 var message_label: Label
@@ -97,7 +97,7 @@ func _spawn_player() -> void:
 
 func _spawn_zombies() -> void:
     for i in range(7):
-        var enemy := CharacterBody3D.new()
+        var enemy = CharacterBody3D.new()
         enemy.set_script(ZombieScript)
         var angle := TAU * float(i) / 7.0
         enemy.position = Vector3(cos(angle) * 10.0, 0.0, sin(angle) * 10.0)
