@@ -33,9 +33,7 @@ func _build_character() -> void:
     material.albedo_color = Color(0.16, 0.38, 0.52)
     material.metallic = 0.12
     body.material_override = material
-    add_child(body
-
-    )
+    add_child(body)
     var head := MeshInstance3D.new()
     var head_mesh := SphereMesh.new()
     head_mesh.radius = 0.25
