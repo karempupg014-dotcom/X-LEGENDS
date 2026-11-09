@@ -246,9 +246,9 @@ export class GameEngine3D {
 
     // 2. Setup Scene & Atmospheric Fog
     this.scene = new THREE.Scene();
-    // Muted atmospheric sky and distance haze give the town more natural depth.
-    this.scene.background = new THREE.Color(0x9bb6c4);
-    this.scene.fog = new THREE.FogExp2(0x9bb6c4, 0.0085);
+    // Warm, cinematic medieval atmosphere with softer distance falloff.
+    this.scene.background = new THREE.Color(0x879ba7);
+    this.scene.fog = new THREE.FogExp2(0x879ba7, 0.0068);
 
     // 3. Setup Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -286,11 +286,12 @@ export class GameEngine3D {
   }
 
   private setupLighting() {
-    const hemiLight = new THREE.HemisphereLight(0xdce9f0, 0x394536, 1.15);
+    const hemiLight = new THREE.HemisphereLight(0xe4edf4, 0x292d27, 1.28);
     hemiLight.position.set(0, 50, 0);
     this.scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffe4c2, 2.0);
+    // Golden late-afternoon key light helps stone, metal and timber read with depth.
+    const sunLight = new THREE.DirectionalLight(0xffd8ad, 2.25);
     sunLight.position.set(35, 60, 40);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
